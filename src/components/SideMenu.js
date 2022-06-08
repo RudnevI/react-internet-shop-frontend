@@ -12,11 +12,22 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  get,
+  set,
+  setCurrentPage,
+  setPageCount,
+  setCurrentRequest,
+} from "../state/productSlice";
 
 export default function SideMenu() {
+  const productsArray = useSelector((state) => state.products.productsArray);
+  const dispatch = useDispatch();
   const [price, setPrice] = useState(100);
   const [criteria, setCriteria] = useState([]);
   const [categories, setCategories] = useState([]);
+
   const handlePriceChange = (event) => {
     setPrice(event.target.value);
     setCriteria([
@@ -33,7 +44,7 @@ export default function SideMenu() {
       body: JSON.stringify(criteria),
     });
     const data = await response.json();
-    console.log(data["data"]);
+    dispatch(set(data["data"]));
   };
   const getCategories = async () => {
     const response = await fetch("http://localhost:8000/api/categories/all");
