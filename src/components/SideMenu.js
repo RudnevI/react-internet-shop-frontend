@@ -1,6 +1,5 @@
 import {
   Button,
-  Checkbox,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -20,6 +19,7 @@ import {
   setPageCount,
   setCurrentRequest,
 } from "../state/productSlice";
+import * as commonFeatures from "../util";
 
 export default function SideMenu() {
   const productsArray = useSelector((state) => state.products.productsArray);

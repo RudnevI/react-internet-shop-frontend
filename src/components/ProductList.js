@@ -11,7 +11,15 @@ import {
 import { Container, maxWidth } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { get, set, setPageCount, setCurrentPage } from "../state/productSlice";
+import {
+  get,
+  set,
+  setPageCount,
+  setCurrentPage,
+  setCurrentRequest,
+} from "../state/productSlice";
+
+import * as commonFeatures from "../util";
 
 export default function ProductList() {
   const productsArray = useSelector((state) => state.products.productsArray);
@@ -20,9 +28,13 @@ export default function ProductList() {
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const [searchValue, setSearchValue] = useState("");
+  useEffect(() => {}, [page]);
+
   useEffect(() => {
-    performRequest();
-  }, [page]);
+    dispatch(
+      set(commonFeatures.performRequest(commonFeatures.getProductsUrl, "GET"))
+    );
+  }, []);
   const getProducts = async () => {
     const response = await fetch(
       "http://localhost:8000/api/products/all?page=" + page
@@ -40,20 +52,6 @@ export default function ProductList() {
     setPageCount(result["last_page"]);
   };
 
-  const performRequest = async (url, method, data = []) => {
-    let response;
-    if (method === "GET") {
-      response = await fetch(url);
-    } else {
-      response = await fetch(url, {
-        method: method,
-        body: JSON.stringify(data),
-      });
-    }
-
-    const result = await response.json();
-    dispatch(set(result["data"]));
-  };
   const getJson = async (url) => {
     const response = await fetch(url);
     const data = await response.json();
